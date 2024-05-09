@@ -44,7 +44,7 @@ public class EmployeeController {
     }
 
     @PatchMapping("/{email}")
-    public ResponseEntity<Employee> updateEmployeeByEmail(@PathVariable String email, @RequestBody EmployeeRequestDTO req){
+    public ResponseEntity<Employee> updateEmployeeByEmail(@PathVariable String email, EmployeeRequestDTO req){
         Employee employee = employeeServiceI.updateEmployee(email, req);
         if(employee == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

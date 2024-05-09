@@ -73,41 +73,51 @@ public class EmployeeService implements EmployeeServiceI {
     }
 
     @Override
-    public Employee updateEmployee(String email,EmployeeRequestDTO req){
-        Employee employee = employeeDAO.findByEmail(email);
-        if(employee != null){
-            employee.setEmployeeName(req.getEmployeeName());
+    @Transactional
+    public Employee updateEmployee(String email, EmployeeRequestDTO req) {
+        Employee existingEmployee = employeeDAO.findByEmail(email);
+        if (existingEmployee != null) {
+            // Check if the provided email is the same as the existing one or if it's already taken
+            if (!email.equals(req.getEmail()) && employeeDAO.findByEmail(req.getEmail()) != null) {
+                throw new RuntimeException("Employee with email " + req.getEmail() + " already exists.");
+            }
+
+            // Update employee information
+            existingEmployee.setEmployeeName(req.getEmployeeName());
             String image = utills.convertToBase64(req.getEmployeePic());
-            employee.setEmployeePic(image);
-            employee.setAccessRole(req.getAccessRole());
-            employee.setDob(req.getDob());
-            employee.setStatus(req.getStatus());
-            employee.setDesignation(req.getDesignation());
-            employee.setDateOfJoin(req.getDateOfJoin());
-            employee.setGender(req.getGender());
-            employee.setAttachedBranch(req.getAttachedBranch());
-            employee.setAddressLine1(req.getAddressLine1());
-            employee.setAddressLine2(req.getAddressLine2());
-            employee.setCity(req.getCity());
-            employee.setState(req.getState());
-            employee.setPostalCode(req.getPostalCode());
-            employee.setContactNo(req.getContactNo());
-            employee.setEmergancyInformer(req.getEmergancyInformer());
-            employee.setEmergancyContactDetails(req.getEmergancyContactDetails());
-            employee.setEmail(req.getEmail());
-            AppUser appUser = new AppUser();
-            appUser.setEmail(employee.getEmail());
-            appUser.setPassword(new BCryptPasswordEncoder().encode("pwd1234567"));
-            appUser.setRole(employee.getAccessRole());
-            appUser.setEmployee(employee);
-            employee.setAppUser(appUser);
-            employeeDAO.save(employee);
-            return employee;
-        }
-        else{
-            return null;
+            existingEmployee.setEmployeePic(image);
+            existingEmployee.setAccessRole(req.getAccessRole());
+            existingEmployee.setDob(req.getDob());
+            existingEmployee.setStatus(req.getStatus());
+            existingEmployee.setDesignation(req.getDesignation());
+            existingEmployee.setDateOfJoin(req.getDateOfJoin());
+            existingEmployee.setGender(req.getGender());
+            existingEmployee.setAttachedBranch(req.getAttachedBranch());
+            existingEmployee.setAddressLine1(req.getAddressLine1());
+            existingEmployee.setAddressLine2(req.getAddressLine2());
+            existingEmployee.setCity(req.getCity());
+            existingEmployee.setState(req.getState());
+            existingEmployee.setPostalCode(req.getPostalCode());
+            existingEmployee.setContactNo(req.getContactNo());
+            existingEmployee.setEmergancyInformer(req.getEmergancyInformer());
+            existingEmployee.setEmergancyContactDetails(req.getEmergancyContactDetails());
+            existingEmployee.setEmail(req.getEmail());
+
+            // Update related app user if necessary
+            AppUser appUser = existingEmployee.getAppUser();
+            if (appUser != null) {
+                appUser.setEmail(existingEmployee.getEmail());
+                appUser.setRole(existingEmployee.getAccessRole());
+                // Update password if needed (not implemented here)
+            }
+
+            // Save the updated employee
+            return employeeDAO.save(existingEmployee);
+        } else {
+            throw new RuntimeException("Employee with email " + email + " not found.");
         }
     }
+
 
     private String generateEmployeeCode(){
         int empNo = new Random().nextInt(10000);
