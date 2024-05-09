@@ -5,7 +5,6 @@ import com.example.SSMS.model.OrderItems;
 import lombok.Data;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 @Data
 public class SalesRequestDTO {
@@ -15,5 +14,8 @@ public class SalesRequestDTO {
     private double addedPoints;
     private String cashierName;
     private ArrayList<OrderItems> items;
-    private Customer customerCode;
+    private String customerCode;
+    private String cardNo;
+    private String exDate;
+    private String cnn;
 }

@@ -12,6 +12,6 @@ public class AdminInitializer {
 
     @PostConstruct
     public void init() {
-        userService.createAdminIfNotExists();
+        userService.createSuperAdminIfNotExists();
     }
 }

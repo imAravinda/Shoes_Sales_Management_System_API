@@ -30,13 +30,14 @@ public class UserService implements UserServiceI {
     }
 
     @Override
-    public void createAdminIfNotExists() {
-        AppUser admin = userDAO.findByRole(Roles.ADMIN);
+    public void createSuperAdminIfNotExists() {
+        AppUser super_admin = userDAO.findByRole(Roles.SUPER_ADMIN);
         AppUser user = new AppUser();
-        if(admin == null){
-            user.setRole(Roles.ADMIN);
+        if(super_admin == null){
+            user.setRole(Roles.SUPER_ADMIN);
             user.setEmail("admin@mail.com");
             user.setPassword(new BCryptPasswordEncoder().encode("admin1234"));
+            user.setEmployee(null);
             userDAO.save(user);
         }
     }

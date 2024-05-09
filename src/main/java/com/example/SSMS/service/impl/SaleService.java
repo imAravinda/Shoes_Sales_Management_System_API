@@ -1,9 +1,8 @@
 package com.example.SSMS.service.impl;
 
 import com.example.SSMS.dtos.SalesRequestDTO;
-import com.example.SSMS.model.Inventory;
-import com.example.SSMS.model.OrderItems;
-import com.example.SSMS.model.Sale;
+import com.example.SSMS.model.*;
+import com.example.SSMS.model.enums.Status;
 import com.example.SSMS.repository.CustomerDAO;
 import com.example.SSMS.repository.InventoryDAO;
 import com.example.SSMS.repository.OrderItemsDAO;
@@ -30,10 +29,12 @@ public class SaleService implements SaleServiceI {
     OrderItemsDAO itemsDAO;
     @Autowired
     CustomerDAO customerDAO;
+    Payment payment;
 
     @Override
     @Transactional
     public Sale createOrder(SalesRequestDTO saleRequest) {
+        payment = new Payment();
         Sale sale = new Sale();
         double totalBillAmount = 0;
         sale.setOrderNo(generateOrderNumber());
@@ -41,10 +42,6 @@ public class SaleService implements SaleServiceI {
         sale.setCustomerName(saleRequest.getCustomerName());
         sale.setPaymentMethod(saleRequest.getPaymentMethod());
         sale.setPurchaseDate(new Date());
-        if (saleRequest.isHasLoyalityCard()) {
-            sale.setAddedPoints(saleRequest.getAddedPoints());
-            sale.setCustomer(saleRequest.getCustomerCode());
-        }
         ArrayList<OrderItems> items = new ArrayList<>();
         for (OrderItems item : saleRequest.getItems()) {
             Inventory inventory = inventoryDAO.findByItemCode(item.getItemCode());
@@ -66,11 +63,51 @@ public class SaleService implements SaleServiceI {
         }
         sale.setTotalPrice(totalBillAmount);
         sale.setItems(items);
-        sale = salesDAO.save(sale);
+        if (saleRequest.isHasLoyalityCard()) {
+            sale.setAddedPoints(saleRequest.getAddedPoints());
+            Customer customer = customerDAO.findByCustomerCode(saleRequest.getCustomerCode());
+            if(customer != null){
+                customer.setRecentlyPurchaseTimeStamp(new Date());
+                customer.setTotalPoint(saleRequest.getAddedPoints());
+                sale.setCustomer(customer);
+            }
+        }
+        if(saleRequest.getPaymentMethod().equals("Card")){
+            payment.setCnn(saleRequest.getCnn());
+            payment.setExDate(saleRequest.getExDate());
+            payment.setCardNo(saleRequest.getCardNo());
+            payment.setOrderNo(sale.getOrderNo());
+            payment.setTotalBillAmount(sale.getTotalPrice());
+            payment.setCashierName(sale.getCashierName());
+            payment.setCustomerName(sale.getCustomerName());
+            sale.setStatus(Status.NOT_APPROVED);
+            sale = salesDAO.save(sale);
+        }else{
+            sale.setStatus(Status.APPROVED);
+            sale = salesDAO.save(sale);
+        }
         for (OrderItems item : items) {
             itemsDAO.save(item);
         }
         return sale;
+    }
+
+    @Override
+    public Sale ApproveCardPaymentOrders(String orderNo){
+            Sale sale = salesDAO.findByOrderNo(orderNo);
+            if(sale == null){
+                return null;
+            }
+            else{
+                sale.setStatus(Status.APPROVED);
+                salesDAO.save(sale);
+                return sale;
+            }
+    }
+
+    @Override
+    public List<Sale> getSalesByStatus(){
+        return salesDAO.findByStatus(Status.NOT_APPROVED);
     }
 
     @Override

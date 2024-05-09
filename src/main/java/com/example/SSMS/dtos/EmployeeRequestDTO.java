@@ -1,24 +1,20 @@
-package com.example.SSMS.model;
+package com.example.SSMS.dtos;
 
+import com.example.SSMS.model.AppUser;
 import com.example.SSMS.model.enums.Gender;
 import com.example.SSMS.model.enums.Roles;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 
 @Data
-@Entity
-@Table(name = "Employee")
-public class Employee{
-    @Id
-    private String employeeCode;
+public class EmployeeRequestDTO {
     private String employeeName;
-    @Column(length = 100000)
-    private String employeePic;
-    @Enumerated(EnumType.STRING)
+    private MultipartFile employeePic;
     private Gender gender;
     private String status;
     private String designation;
@@ -34,9 +30,5 @@ public class Employee{
     private String contactNo;
     private String emergancyInformer;
     private String emergancyContactDetails;
-    @Column(unique = true)
     private String email;
-    @OneToOne(mappedBy = "employee",cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private AppUser appUser;
 }

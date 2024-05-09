@@ -1,8 +1,8 @@
 package com.example.SSMS.model.enums;
 
 public enum Roles {
-    CUSTOMER,
+    SUPER_ADMIN,
     ADMIN,
     SUPPLIER,
-    EMPLOYEE
+    USER
 }

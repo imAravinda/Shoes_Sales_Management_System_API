@@ -5,7 +5,7 @@ import com.example.SSMS.model.enums.Level;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Data
 @Entity
@@ -20,11 +20,15 @@ public class Customer{
     private Date joinDateAsALoyality;
     @Enumerated(EnumType.STRING)
     private Level level;
-    private Integer totalPoint;
+    private double totalPoint;
     private Date dob;
     private String addressLine1;
     private String addressLine2;
     private String city;
     private String state;
     private String postalCode;
+    private String contactNo;
+    @Column(unique = true)
+    private String email;
+    private Date recentlyPurchaseTimeStamp;
 }

@@ -6,5 +6,5 @@ public interface UserServiceI {
 
     UserDetailsService userDetailsService();
 
-    void createAdminIfNotExists();
+    void createSuperAdminIfNotExists();
 }

@@ -1,5 +1,6 @@
 package com.example.SSMS.model;
 
+import com.example.SSMS.model.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -27,4 +28,5 @@ public class Sale {
     @ManyToOne
     @JoinColumn(name = "customer_code", referencedColumnName = "customerCode")
     private Customer customer;
+    private Status status;
 }

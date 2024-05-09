@@ -4,6 +4,7 @@ import com.example.SSMS.dtos.InventoryRequestDTO;
 import com.example.SSMS.model.Inventory;
 import com.example.SSMS.repository.InventoryDAO;
 import com.example.SSMS.service.InventoryServiceI;
+import com.example.SSMS.utill.Utills;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,14 +16,15 @@ public class InventoryService implements InventoryServiceI {
 
     @Autowired
     InventoryDAO inventoryDAO;
+    @Autowired
+    private Utills utill;
 
     @Override
     public Inventory addInventories(InventoryRequestDTO request) {
         Inventory inventory = new Inventory();
         inventory.setItemCode(request.getItemCode());
         inventory.setItemDesc(request.getItemDesc());
-        String image = convertToBase64(request.getItemPic());
-        System.out.println(image);
+        String image = utill.convertToBase64(request.getItemPic());
         inventory.setItemPic(image);
         inventory.setCategory(request.getCategory());
         inventory.setSize(request.getSize());
@@ -59,12 +61,5 @@ public class InventoryService implements InventoryServiceI {
         inventoryDAO.deleteByItemCode(itemCode);
     }
 
-    private String convertToBase64(MultipartFile file) {
-        try {
-            byte[] bytes = file.getBytes();
-            return java.util.Base64.getEncoder().encodeToString(bytes);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+
 }

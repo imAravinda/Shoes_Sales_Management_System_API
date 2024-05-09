@@ -4,5 +4,7 @@ import com.example.SSMS.model.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CustomerDAO extends JpaRepository<Customer,Integer> {
-    Customer findCustomerByCustomerCode(String customerCode);
+    Customer findByCustomerCode(String customerCode);
+
+    Customer findByContactNo(String contactNo);
 }

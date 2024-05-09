@@ -1,6 +1,7 @@
 package com.example.SSMS.model;
 
 import com.example.SSMS.model.enums.Roles;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,6 +23,10 @@ public class AppUser implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private Roles role;
+    @OneToOne
+    @JoinColumn(name = "employee_id", referencedColumnName = "employeeCode")
+    @JsonBackReference
+    private Employee employee;
 
 
     @Override
