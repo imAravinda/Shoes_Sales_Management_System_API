@@ -15,6 +15,7 @@ public class Sale {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(unique = true)
     private String orderNo;
     private String customerName;
     private double totalPrice;
@@ -29,4 +30,5 @@ public class Sale {
     @JoinColumn(name = "customer_code", referencedColumnName = "customerCode")
     private Customer customer;
     private Status status;
+    private boolean refundStatus = false;
 }

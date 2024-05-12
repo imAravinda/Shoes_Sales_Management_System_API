@@ -1,6 +1,7 @@
 package com.example.SSMS.service;
 
 import com.example.SSMS.dtos.SalesRequestDTO;
+import com.example.SSMS.model.Refund;
 import com.example.SSMS.model.Sale;
 import com.example.SSMS.model.enums.Status;
 

@@ -28,7 +28,7 @@ public class EmployeeService implements EmployeeServiceI {
         Employee existingEmployee = employeeDAO.findByEmail(req.getEmail());
         if(existingEmployee == null){
             Employee employee = new Employee();
-            employee.setEmployeeCode(generateEmployeeCode());
+            employee.setEmployeeCode(utills.generateCode("EMP"));
             employee.setEmployeeName(req.getEmployeeName());
             String image = utills.convertToBase64(req.getEmployeePic());
             employee.setEmployeePic(image);
@@ -48,6 +48,7 @@ public class EmployeeService implements EmployeeServiceI {
             employee.setEmergancyInformer(req.getEmergancyInformer());
             employee.setEmergancyContactDetails(req.getEmergancyContactDetails());
             employee.setEmail(req.getEmail());
+            employee.setBranch(req.getBranch());
             AppUser appUser = new AppUser();
             appUser.setEmail(employee.getEmail());
             appUser.setPassword(new BCryptPasswordEncoder().encode("pwd1234567"));
@@ -77,8 +78,7 @@ public class EmployeeService implements EmployeeServiceI {
     public Employee updateEmployee(String email, EmployeeRequestDTO req) {
         Employee existingEmployee = employeeDAO.findByEmail(email);
         if (existingEmployee != null) {
-            // Check if the provided email is the same as the existing one or if it's already taken
-            if (!email.equals(req.getEmail()) && employeeDAO.findByEmail(req.getEmail()) != null) {
+             if (!email.equals(req.getEmail()) && employeeDAO.findByEmail(req.getEmail()) != null) {
                 throw new RuntimeException("Employee with email " + req.getEmail() + " already exists.");
             }
 
@@ -102,6 +102,7 @@ public class EmployeeService implements EmployeeServiceI {
             existingEmployee.setEmergancyInformer(req.getEmergancyInformer());
             existingEmployee.setEmergancyContactDetails(req.getEmergancyContactDetails());
             existingEmployee.setEmail(req.getEmail());
+            existingEmployee.setBranch(req.getBranch());
 
             // Update related app user if necessary
             AppUser appUser = existingEmployee.getAppUser();
@@ -118,9 +119,8 @@ public class EmployeeService implements EmployeeServiceI {
         }
     }
 
-
-    private String generateEmployeeCode(){
-        int empNo = new Random().nextInt(10000);
-        return "EMP"+empNo;
+    @Override
+    public List<Employee> getEmployeesByBranch(String branch) {
+        return employeeDAO.findByBranch(branch);
     }
 }

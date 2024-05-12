@@ -34,6 +34,7 @@ public class Employee{
     private String contactNo;
     private String emergancyInformer;
     private String emergancyContactDetails;
+    private String branch;
     @Column(unique = true)
     private String email;
     @OneToOne(mappedBy = "employee",cascade = CascadeType.ALL)

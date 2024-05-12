@@ -31,4 +31,5 @@ public class EmployeeRequestDTO {
     private String emergancyInformer;
     private String emergancyContactDetails;
     private String email;
+    private String branch;
 }

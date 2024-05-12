@@ -11,7 +11,7 @@ public class OrderItems {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "orderNo")
+    @JoinColumn(name = "orderNo",referencedColumnName = "orderNo")
     private Sale sale;
     private String itemCode;
     private String itemDesc;
@@ -19,4 +19,7 @@ public class OrderItems {
     private double unitPrice;
     private int qty;
     private double totalPriceOfEachItem;
+    @ManyToOne
+    @JoinColumn(name = "refundApproval")
+    private Refund returnStatus;
 }

@@ -24,5 +24,6 @@ public class Inventory {
     private double unitPriceBuy;
     private double expectedProfit;
     private double profitMargin;
+    private int qty;
     private String status;
 }

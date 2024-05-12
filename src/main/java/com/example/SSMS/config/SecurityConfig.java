@@ -38,6 +38,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/inventory/**").hasAnyAuthority(Roles.ADMIN.name())
                         .requestMatchers("/api/customer/**").hasAnyAuthority(Roles.USER.name())
                         .requestMatchers("/api/employee").hasAnyAuthority(Roles.ADMIN.name(),Roles.SUPER_ADMIN.name())
+                        .requestMatchers("/api/supplier").hasAnyAuthority(Roles.ADMIN.name())
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

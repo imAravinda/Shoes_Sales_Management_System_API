@@ -13,4 +13,6 @@ public interface EmployeeServiceI {
     Employee getEmployeeByEmail(String email);
 
     Employee updateEmployee(String email,EmployeeRequestDTO req);
+
+    List<Employee> getEmployeesByBranch(String branch);
 }

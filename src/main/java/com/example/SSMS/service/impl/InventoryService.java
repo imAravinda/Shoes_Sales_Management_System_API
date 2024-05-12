@@ -2,7 +2,9 @@ package com.example.SSMS.service.impl;
 
 import com.example.SSMS.dtos.InventoryRequestDTO;
 import com.example.SSMS.model.Inventory;
+import com.example.SSMS.model.Supplier;
 import com.example.SSMS.repository.InventoryDAO;
+import com.example.SSMS.repository.SupplierDAO;
 import com.example.SSMS.service.InventoryServiceI;
 import com.example.SSMS.utill.Utills;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,8 @@ public class InventoryService implements InventoryServiceI {
     @Autowired
     InventoryDAO inventoryDAO;
     @Autowired
+    SupplierDAO supplierDAO;
+    @Autowired
     private Utills utill;
 
     @Override
@@ -24,12 +28,18 @@ public class InventoryService implements InventoryServiceI {
         Inventory inventory = new Inventory();
         inventory.setItemCode(request.getItemCode());
         inventory.setItemDesc(request.getItemDesc());
+        inventory.setQty(request.getQty());
         String image = utill.convertToBase64(request.getItemPic());
         inventory.setItemPic(image);
         inventory.setCategory(request.getCategory());
         inventory.setSize(request.getSize());
-        inventory.setSupplierCode(request.getSupplierCode());
-        inventory.setSupplierName(request.getSupplierName());
+        Supplier supplier = supplierDAO.findBySupplierCode(request.getSupplierCode());
+        if(supplier != null){
+            inventory.setSupplierCode(supplier.getSupplierCode());
+            inventory.setSupplierName(supplier.getSupplierName());
+        }else{
+            throw new RuntimeException("Supplier Not Found");
+        }
         inventory.setUnitPriceBuy(request.getUnitPriceBuy());
         inventory.setUnitPriceSale(request.getUnitPriceSale());
         double expectedProfit = request.getUnitPriceSale() - request.getUnitPriceBuy();

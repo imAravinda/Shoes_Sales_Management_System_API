@@ -10,8 +10,8 @@ public class InventoryRequestDTO {
     private MultipartFile itemPic;
     private String category;
     private int size;
+    private int qty;
     private String supplierCode;
-    private String supplierName;
     private double unitPriceSale;
     private double unitPriceBuy;
     private String status;

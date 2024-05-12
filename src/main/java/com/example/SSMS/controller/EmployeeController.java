@@ -54,4 +54,15 @@ public class EmployeeController {
         }
     }
 
+    @GetMapping("/branch/{branch}")
+    public ResponseEntity<List<Employee>> fetchEmployeesByBranch(@PathVariable String email){
+        List<Employee> employees = employeeServiceI.getEmployeesByBranch(email);
+        if(employees != null){
+            return new ResponseEntity<>(employees,HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
