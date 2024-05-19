@@ -1,6 +1,7 @@
 package com.example.SSMS.service.impl;
 
 import com.example.SSMS.dtos.SalesRequestDTO;
+import com.example.SSMS.exception.RecordNotFoundException;
 import com.example.SSMS.model.*;
 import com.example.SSMS.model.enums.Status;
 import com.example.SSMS.repository.CustomerDAO;
@@ -11,7 +12,6 @@ import com.example.SSMS.service.SaleServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,9 +43,14 @@ public class SaleService implements SaleServiceI {
         sale.setPaymentMethod(saleRequest.getPaymentMethod());
         sale.setPurchaseDate(new Date());
         ArrayList<OrderItems> items = new ArrayList<>();
+        double totalProfit = 0;
         for (OrderItems item : saleRequest.getItems()) {
             Inventory inventory = inventoryDAO.findByItemCode(item.getItemCode());
             if (inventory != null) {
+                inventory.setQty(inventory.getQty() - item.getQty());
+                if(inventory.getQty() ==0 ){
+                    inventory.setStatus("Not Available");
+                }
                 OrderItems newItem = new OrderItems();
                 newItem.setItemCode(item.getItemCode());
                 newItem.setItemDesc(inventory.getItemDesc());
@@ -56,19 +61,25 @@ public class SaleService implements SaleServiceI {
                 newItem.setTotalPriceOfEachItem(totalPrice);
                 newItem.setSale(sale);
                 totalBillAmount += totalPrice;
+                totalProfit += inventory.getExpectedProfit();
                 items.add(newItem);
+                inventoryDAO.save(inventory);
             } else {
                 throw new RuntimeException("Item is Not Found");
             }
         }
         sale.setTotalPrice(totalBillAmount);
         sale.setItems(items);
+        sale.setProfit(totalProfit);
         if (saleRequest.isHasLoyalityCard()) {
             sale.setAddedPoints(saleRequest.getAddedPoints());
             Customer customer = customerDAO.findByCustomerCode(saleRequest.getCustomerCode());
             if(customer != null){
                 customer.setRecentlyPurchaseTimeStamp(new Date());
-                customer.setTotalPoint(saleRequest.getAddedPoints());
+                if(sale.getTotalPrice() > 800){
+                    int points = (int) (sale.getTotalPrice()/800);
+                    customer.setTotalPoint(points);
+                }
                 sale.setCustomer(customer);
             }
         }
@@ -96,7 +107,7 @@ public class SaleService implements SaleServiceI {
     public Sale ApproveCardPaymentOrders(String orderNo){
             Sale sale = salesDAO.findByOrderNo(orderNo);
             if(sale == null){
-                return null;
+                throw new RecordNotFoundException("Sale does not exist");
             }
             else{
                 sale.setStatus(Status.APPROVED);

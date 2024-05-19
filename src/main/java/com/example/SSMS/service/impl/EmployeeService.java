@@ -4,7 +4,6 @@ import com.example.SSMS.dtos.EmployeeRequestDTO;
 import com.example.SSMS.model.AppUser;
 import com.example.SSMS.model.Employee;
 import com.example.SSMS.repository.EmployeeDAO;
-import com.example.SSMS.repository.UserDAO;
 import com.example.SSMS.service.EmployeeServiceI;
 import com.example.SSMS.utill.Utills;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Random;
 
 @Service
 public class EmployeeService implements EmployeeServiceI {

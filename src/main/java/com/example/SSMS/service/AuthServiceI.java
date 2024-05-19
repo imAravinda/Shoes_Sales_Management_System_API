@@ -12,4 +12,6 @@ public interface AuthServiceI {
     AppUser createUser(SignUpRequestDTO signUpRequest);
 
     AuthenticationResponseDTO signIn(SignInRequestDTO signInRequest, HttpServletResponse response) throws IOException;
+
+    AppUser getCurrentUser();
 }

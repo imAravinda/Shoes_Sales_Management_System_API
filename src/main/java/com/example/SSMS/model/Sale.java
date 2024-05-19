@@ -31,4 +31,5 @@ public class Sale {
     private Customer customer;
     private Status status;
     private boolean refundStatus = false;
+    private double profit;
 }

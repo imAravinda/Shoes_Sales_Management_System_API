@@ -3,9 +3,10 @@ package com.example.SSMS.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Date;
+
 @Entity
 @Data
-@Table(name = "AdminPanel")
 public class AdminPanel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,7 +14,8 @@ public class AdminPanel {
     private double totalSales;
     private double totalProfit;
     private String mostSaleItem;
-    @Lob
-    private byte[] mostSaleItemPic;
+    @Column(length = 100000)
+    private String mostSaleItemPic;
     private int mostSaleItemQty;
+    private Date date;
 }

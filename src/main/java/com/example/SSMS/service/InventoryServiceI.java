@@ -12,7 +12,7 @@ public interface InventoryServiceI {
 
     Inventory getInventoryByItemCode(String itemCode);
 
-    Inventory updateInvantory(String itemCode, Inventory updatedInvetory);
+    Inventory updateInvantory(String itemCode, InventoryRequestDTO updatedInvetory);
 
     void removeInventoryByItemCode(String itemCode);
 }

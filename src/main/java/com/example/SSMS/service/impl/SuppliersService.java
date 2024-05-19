@@ -1,10 +1,10 @@
 package com.example.SSMS.service.impl;
 
 import com.example.SSMS.dtos.SupplierRequestDTO;
-import com.example.SSMS.model.AppUser;
-import com.example.SSMS.model.Employee;
+import com.example.SSMS.exception.NoContentException;
+import com.example.SSMS.exception.RecordAlreadyExistException;
+import com.example.SSMS.exception.RecordNotFoundException;
 import com.example.SSMS.model.Supplier;
-import com.example.SSMS.model.enums.Category;
 import com.example.SSMS.repository.SupplierDAO;
 import com.example.SSMS.service.SuppliersServiceI;
 import com.example.SSMS.utill.Utills;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Random;
 
 @Service
 public class SuppliersService implements SuppliersServiceI {
@@ -34,12 +33,7 @@ public class SuppliersService implements SuppliersServiceI {
             supplier.setCity(req.getCity());
             supplier.setState(req.getState());
             supplier.setPostalCode(req.getPostalCode());
-            if(supplier.getCategory().equals(Category.LOCAL)){
-                supplier.setCountry("Sri Lanka");
-            }
-            else{
-                supplier.setCountry(req.getCountry());
-            }
+            supplier.setCountry(req.getCountry());
             supplier.setMobileNo(req.getMobileNo());
             supplier.setLandLineNo(req.getLandLineNo());
             supplier.setEmail(req.getEmail());
@@ -47,18 +41,30 @@ public class SuppliersService implements SuppliersServiceI {
             return supplier;
         }
         else{
-            throw new RuntimeException("Supplier with email " + req.getEmail() + " already exists.");
+            throw new RecordAlreadyExistException("This User Already Exist");
         }
     }
 
     @Override
     public List<Supplier> getAllSuppliers() {
-        return supplierDAO.findAll();
+        List<Supplier> suppliers = supplierDAO.findAll();
+        if(suppliers.isEmpty()){
+            throw new NoContentException("There are no any suppliers");
+        }
+        else{
+            return suppliers;
+        }
     }
 
     @Override
     public Supplier getSupplierByEmail(String email) {
-        return supplierDAO.findByEmail(email);
+        Supplier supplier =  supplierDAO.findByEmail(email);
+        if(supplier != null){
+            return supplier;
+        }
+        else{
+            throw new RecordNotFoundException("Supplier Not Found");
+        }
     }
 
     @Override
@@ -66,7 +72,7 @@ public class SuppliersService implements SuppliersServiceI {
         Supplier existingSuppliier = supplierDAO.findByEmail(email);
         if (existingSuppliier != null) {
             if (!email.equals(req.getEmail()) && supplierDAO.findByEmail(req.getEmail()) != null) {
-                throw new RuntimeException("Employee with email " + req.getEmail() + " already exists.");
+                throw new RecordAlreadyExistException("Employee with email " + req.getEmail() + " already exists.");
             }
             existingSuppliier.setSupplierName(req.getSupplierName());
             existingSuppliier.setCategory(req.getCategory());
@@ -82,7 +88,7 @@ public class SuppliersService implements SuppliersServiceI {
             supplierDAO.save(existingSuppliier);
             return existingSuppliier;
         } else {
-            throw new RuntimeException("Employee with email " + email + " not found.");
+            throw new RecordNotFoundException("Supplier with email " + email + " not found.");
         }
     }
 

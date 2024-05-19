@@ -14,5 +14,4 @@ public class InventoryRequestDTO {
     private String supplierCode;
     private double unitPriceSale;
     private double unitPriceBuy;
-    private String status;
 }

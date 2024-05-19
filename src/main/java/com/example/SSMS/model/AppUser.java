@@ -2,6 +2,8 @@ package com.example.SSMS.model;
 
 import com.example.SSMS.model.enums.Roles;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,6 +22,7 @@ public class AppUser implements UserDetails {
     private Long id;
     @Column(unique = true, nullable = false)
     private String email;
+    @JsonIgnore
     private String password;
     @Enumerated(EnumType.STRING)
     private Roles role;

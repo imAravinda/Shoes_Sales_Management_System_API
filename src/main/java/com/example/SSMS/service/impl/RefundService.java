@@ -12,8 +12,6 @@ import com.example.SSMS.repository.SalesDAO;
 import com.example.SSMS.service.RefundServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.List;
 

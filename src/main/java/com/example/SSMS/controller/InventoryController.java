@@ -54,7 +54,7 @@ public class InventoryController {
 
     @PatchMapping("/{itemCode}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Inventory> updateInventoryByItemCode(@PathVariable String itemCode, Inventory request) {
+    public ResponseEntity<Inventory> updateInventoryByItemCode(@PathVariable String itemCode, InventoryRequestDTO request) {
         if (itemCode == null || request == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

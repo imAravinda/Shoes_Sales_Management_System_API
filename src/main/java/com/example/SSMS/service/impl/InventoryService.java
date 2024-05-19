@@ -9,7 +9,6 @@ import com.example.SSMS.service.InventoryServiceI;
 import com.example.SSMS.utill.Utills;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class InventoryService implements InventoryServiceI {
         inventory.setExpectedProfit(expectedProfit);
         double profitMargin = (expectedProfit * 100)/ request.getUnitPriceBuy();
         inventory.setProfitMargin(profitMargin);
-        inventory.setStatus(request.getStatus());
+        inventory.setStatus("Available");
         return inventoryDAO.save(inventory);
     }
 
@@ -61,9 +60,32 @@ public class InventoryService implements InventoryServiceI {
     }
 
     @Override
-    public Inventory updateInvantory(String itemCode,Inventory updatedInvetory) {
-        updatedInvetory.setItemCode(itemCode);
-        return inventoryDAO.save(updatedInvetory);
+    public Inventory updateInvantory(String itemCode,InventoryRequestDTO req) {
+        Inventory existInventory = inventoryDAO.findByItemCode(itemCode);
+        if(existInventory != null){
+            existInventory.setItemDesc(req.getItemDesc());
+            String image = utill.convertToBase64(req.getItemPic());
+            existInventory.setItemPic(image);
+            existInventory.setSize(req.getSize());
+            existInventory.setQty(req.getQty());
+            Supplier supplier = supplierDAO.findBySupplierCode(req.getSupplierCode());
+            if(supplier != null){
+                existInventory.setSupplierCode(supplier.getSupplierCode());
+                existInventory.setSupplierName(supplier.getSupplierName());
+            }else{
+                throw new RuntimeException("Supplier Not Found");
+            }
+            existInventory.setCategory(req.getCategory());
+            existInventory.setUnitPriceSale(req.getUnitPriceSale());
+            existInventory.setUnitPriceBuy(req.getUnitPriceBuy());
+            double expectedProfit = req.getUnitPriceSale() - req.getUnitPriceBuy();
+            existInventory.setExpectedProfit(expectedProfit);
+            double profitMargin = (expectedProfit * 100)/ req.getUnitPriceBuy();
+            existInventory.setProfitMargin(profitMargin);
+            return inventoryDAO.save(existInventory);
+        }else {
+            throw new RuntimeException("Inventory with item code " + itemCode + " not found.");
+        }
     }
 
     @Override
