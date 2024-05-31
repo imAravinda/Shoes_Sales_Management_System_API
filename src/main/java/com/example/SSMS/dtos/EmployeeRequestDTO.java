@@ -1,11 +1,8 @@
 package com.example.SSMS.dtos;
 
-import com.example.SSMS.model.AppUser;
+
 import com.example.SSMS.model.enums.Gender;
 import com.example.SSMS.model.enums.Roles;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToOne;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 

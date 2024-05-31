@@ -32,7 +32,6 @@ public class CustomerService implements CustomerServiceI {
         customer.setState(request.getState());
         customer.setPostalCode(request.getPostalCode());
         customer.setJoinDateAsALoyality(new Date());
-        customer.setTotalPoint(request.getTotalPoint());
         customer.setContactNo(request.getContactNo());
         customer.setEmail(request.getEmail());
         customer.setRecentlyPurchaseTimeStamp(new Date());

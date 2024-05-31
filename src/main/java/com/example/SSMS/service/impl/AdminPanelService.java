@@ -1,5 +1,6 @@
 package com.example.SSMS.service.impl;
 
+import com.example.SSMS.dtos.AdminPanelRequestDTO;
 import com.example.SSMS.model.AdminPanel;
 import com.example.SSMS.model.Inventory;
 import com.example.SSMS.model.OrderItems;
@@ -11,6 +12,8 @@ import com.example.SSMS.service.AdminPanelServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -21,15 +24,19 @@ public class AdminPanelService implements AdminPanelServiceI {
     InventoryDAO inventoryDAO;
 
     @Override
-    public AdminPanel getSalesSummary(Date date) {
+    public AdminPanel getSalesSummary(AdminPanelRequestDTO req) {
         List<Sale> salesList = salesDAO.findAll();
         AdminPanel adminPanel = new AdminPanel();
         List<Sale> activeSales = new ArrayList<>();
         Map<String, Integer> items = new HashMap<>();
         double totalProfit = 0;
         for(Sale sale : salesList){
-            if(!sale.isRefundStatus() && sale.getStatus().equals(Status.APPROVED) && sale.getPurchaseDate().equals(date)){
-                activeSales.add(sale);
+            if(!sale.isRefundStatus() && sale.getStatus().equals(Status.APPROVED)){
+                LocalDate saleDate = sale.getPurchaseDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                LocalDate reqDate = req.getDate().toLocalDate();
+                if (saleDate.equals(reqDate)) {
+                    activeSales.add(sale);
+                }
             }
         }
         double totalSales = activeSales.size();
